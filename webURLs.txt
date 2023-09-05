@@ -1,3 +1,4 @@
 #url = "https://mangadex.org/title/a25e46ec-30f7-4db6-89df-cacbc1d9a900/horimiya"
 https://chapmanganato.com/manga-rz951534
 https://realpython.github.io/fake-jobs/
+https://bato.to/series/82074/horimiya-official
