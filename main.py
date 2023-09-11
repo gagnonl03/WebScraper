@@ -1,11 +1,33 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+import urllib.request
 
 
-def dump_from_target(url, chap_folder):
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--blink-settings=imagesEnabled=false')
+
+driver = webdriver.Chrome(options=chrome_options)
+
+
+def download_from_urls(path_target, img_sources):
+    x = 1
+    for url in img_sources:
+        urllib.request.urlretrieve(url, path_target + f"\\ Image {x}.png")
+        x += 1
+    return
+
+
+def collect_img_urls(chap_url):
+    driver.get(chap_url)
+    soup_source = BeautifulSoup(driver.page_source, "html.parser")
+    ch_imgs = soup_source.find_all("img", class_="page-img")
+    img_urls = list()
+    for img in ch_imgs:
+        img_urls.append(img['src'])
+
+    return img_urls
 
 
 url = "https://bato.to/series/82074/horimiya-official"
@@ -28,7 +50,19 @@ for chapt in ch_raws:
 folder_name = os.getcwd() + "\\" + manga_name
 os.mkdir(folder_name)
 
+img_urls = dict()
+print("Collecting URIs...")
 for chap in chapt_dict:
     chap_folder = folder_name + "\\" + chap
     os.mkdir(chap_folder)
-    dump_from_target(chapt_dict[chap], chap_folder)
+    img_urls[chap] = collect_img_urls(chapt_dict[chap])
+    print(f"Collected URIs for {chap}")
+
+print("Collected all URIs")
+driver.close()
+
+for chap in img_urls:
+    print(f"Downloading images for {chap}")
+    chap_folder = folder_name + "\\" + chap
+    download_from_urls(chap_folder, img_urls[chap])
+    print("Download Success")
