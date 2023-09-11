@@ -1,0 +1,2 @@
+# WebScraper
+possible manga webscraper
