@@ -66,7 +66,12 @@ chapt_dict = dict()
 
 for chapt in ch_raws:
     url_target = "http://bato.to" + chapt['href']
-    chapt_num = chapt.text[1:len(chapt.text) - 1]
+    chapt_num = (chapt.text[1:len(chapt.text) - 1]
+                 .replace(":", "-")
+                 .replace("\n", "")
+                 .replace("?", "")
+                 .replace("*", " ")
+                 .replace("\"", "'"))
     chapt_dict[chapt_num] = url_target
 
 folder_name = os.getcwd() + "\\" + manga_name
@@ -84,10 +89,11 @@ else:
 
 img_urls = dict()
 print("Collecting URIs...")
+ask_to_replace = True
 for chap in chapt_dict:
     chap_folder = folder_name + "\\" + chap
     if os.path.isdir(chap_folder):
-        if len(os.listdir(chap_folder)) > 0:
+        if len(os.listdir(chap_folder)) > 0 and ask_to_replace:
             print("A folder for the volume and chapter number already exists and is not empty? Would you "
                   "like to replace it? \n"
                   "This will delete all of the folders contents! (y/n)")
@@ -95,8 +101,13 @@ for chap in chapt_dict:
             if input1.lower().strip() == "y":
                 shutil.rmtree(chap_folder)
                 os.mkdir(chap_folder)
+            elif input1.lower().strip() == "nta":
+                ask_to_replace = False
+                print("received nta")
             else:
                 print(f"skipped making folder for {chap}")
+        else:
+            print(f"skipped making folder for {chap} because of nta")
     else:
         os.mkdir(chap_folder)
     img_urls[chap] = collect_img_urls(chapt_dict[chap])
