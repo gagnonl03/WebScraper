@@ -2,37 +2,17 @@ import os
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import urllib.request
 import shutil
+import helper_functions as helper
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--blink-settings=imagesEnabled=false')
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--headless=new")
+
 
 driver = webdriver.Chrome(options=chrome_options)
-
-
-def download_from_urls(path_target, img_sources):
-    if len(os.listdir(path_target)) > 0:
-        print("Directory is not empty, skipping...")
-        return
-    x = 1
-    total_images = len(img_sources)
-    for uri in img_sources:
-        print(f"Downloading image {x} / {total_images}")
-        urllib.request.urlretrieve(uri, path_target + f"\\ Image {x}.png")
-        x += 1
-    return
-
-
-def collect_img_urls(chap_url):
-    driver.get(chap_url)
-    soup_source = BeautifulSoup(driver.page_source, "html.parser")
-    ch_imgs = soup_source.find_all("img", class_="page-img")
-    img_urls = list()
-    for img in ch_imgs:
-        img_urls.append(img['src'])
-
-    return img_urls
 
 
 print("Input the link for a manga on bato.to (this should be the main page for the manga) "
@@ -53,7 +33,6 @@ except:
     print("error accessing link")
     exit(100)
 
-# url = "https://bato.to/series/82074/horimiya-official"
 page = requests.get(url)
 
 soup = BeautifulSoup(page.content, "html.parser")
@@ -94,8 +73,8 @@ for chap in chapt_dict:
     chap_folder = folder_name + "\\" + chap
     if os.path.isdir(chap_folder):
         if len(os.listdir(chap_folder)) > 0 and ask_to_replace:
-            print("A folder for the volume and chapter number already exists and is not empty? Would you "
-                  "like to replace it? \n"
+            print("A folder for the volume and chapter number already exists and is not empty? \n"
+                  "Would you like to replace it? \n"
                   "This will delete all of the folders contents! (y/n)")
             input1 = input()
             if input1.lower().strip() == "y":
@@ -110,7 +89,7 @@ for chap in chapt_dict:
             print(f"skipped making folder for {chap} because of nta")
     else:
         os.mkdir(chap_folder)
-    img_urls[chap] = collect_img_urls(chapt_dict[chap])
+    img_urls[chap] = helper.collect_img_urls(driver, chapt_dict[chap])
     print(f"Collected URIs for {chap}")
 
 print("Collected all URIs")
@@ -119,4 +98,4 @@ driver.close()
 for chap in img_urls:
     print(f"Downloading images for {chap}...")
     chap_folder = folder_name + "\\" + chap
-    download_from_urls(chap_folder, img_urls[chap])
+    helper.download_from_urls(chap_folder, img_urls[chap])
