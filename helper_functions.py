@@ -1,18 +1,40 @@
 import os
+import shutil
 import urllib.request
 from bs4 import BeautifulSoup
 
 
-def download_from_urls(path_target, img_sources):
-    if len(os.listdir(path_target)) > 0:
-        print("Directory is not empty, skipping...")
-        return
-    x = 1
-    total_images = len(img_sources)
-    for uri in img_sources:
-        print(f"Downloading image {x} / {total_images}")
-        urllib.request.urlretrieve(uri, path_target + f"\\ Image {x}.png")
-        x += 1
+def make_folders(chapt_dict, manga_folder):
+    replace_folders_status = 0
+    for chapter in chapt_dict:
+        chap_folder = manga_folder + "\\" + chapter
+        if os.path.isdir(chap_folder) and replace_folders_status == 0:
+            print(f"A folder for chapter {chapter} already exists")
+            print("Would you like to replace folders that exist, or ignore them? (y/n)")
+            print("Insert (ys/ns) to only skip this specific folder")
+            user_input = input().strip().lower()
+            if user_input == "y":
+                shutil.rmtree(chap_folder)
+                replace_folders_status = 1
+                os.mkdir(chap_folder)
+            elif user_input == "ys":
+                shutil.rmtree(chap_folder)
+                os.mkdir(chap_folder)
+            elif user_input == "n":
+                replace_folders_status = 2
+        elif os.path.isdir(chap_folder) and replace_folders_status == 1:
+            shutil.rmtree(chap_folder)
+            os.mkdir(chap_folder)
+        elif os.path.isdir(chap_folder) and replace_folders_status == 2:
+            pass
+        else:
+            os.mkdir(chap_folder)
+
+
+def download_chapter(driver, chap, chapter_url, folder_name):
+    img_sources = collect_img_urls(driver, chapter_url)
+    chapter_folder = folder_name + "\\" + chap
+    download_from_urls(chapter_folder, img_sources)
     return
 
 
@@ -25,3 +47,25 @@ def collect_img_urls(driver, chap_url):
         img_urls.append(img['src'])
 
     return img_urls
+
+
+def download_from_urls(path_target, img_sources):
+    x = 1
+    total_images = len(img_sources)
+    if len(os.listdir(path_target)) == 0:
+        print("Directory is not full, downloading...")
+        for uri in img_sources:
+            print(f"Downloading image {x} / {total_images}")
+            urllib.request.urlretrieve(uri, path_target + f"\\ Image {x}.png")
+            x += 1
+    elif len(os.listdir(path_target)) < total_images:
+        print("Directory is not full, repairing")
+        for index in range(len(img_sources)):
+            if os.path.isfile(path_target + f"\\ Image {index + 1}.png"):
+                pass
+            else:
+                print(f"Downloading image {index + 1} / {total_images}")
+                urllib.request.urlretrieve(img_sources[index], path_target + f"\\ Image {index + 1}.png")
+
+    else:
+        print("Directory is full, skipping")
