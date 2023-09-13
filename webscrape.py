@@ -50,7 +50,8 @@ for chapt in ch_raws:
                  .replace("\n", "")
                  .replace("?", "")
                  .replace("*", " ")
-                 .replace("\"", "'"))
+                 .replace("\"", "'")
+                 .replace("..", ""))
     chapt_dict[chapt_num] = url_target
 
 folder_name = os.getcwd() + "\\" + manga_name
