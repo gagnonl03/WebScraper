@@ -16,7 +16,7 @@ driver = webdriver.Chrome(options=chrome_options)
 print("Input the link for a manga on bato.to (this should be the main page for the manga) "
       "to start scraping")
 user_input = input().strip().lower()
-url = ""
+url = user_input
 
 if user_input[0:4] != "http":
     user_input = "http://" + user_input
@@ -68,3 +68,4 @@ for chapter in chapt_dict:
     helper.download_chapter(driver, chapter, chapt_dict[chapter], folder_name)
 
 driver.close()
+print("Download Success!")

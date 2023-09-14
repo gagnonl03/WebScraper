@@ -34,7 +34,7 @@ def make_folders(chapt_dict, manga_folder):
 def download_chapter(driver, chap, chapter_url, folder_name):
     img_sources = collect_img_urls(driver, chapter_url)
     chapter_folder = folder_name + "\\" + chap
-    download_from_urls(chapter_folder, img_sources)
+    download_from_urls(chap, chapter_folder, img_sources)
     return
 
 
@@ -45,27 +45,28 @@ def collect_img_urls(driver, chap_url):
     img_urls = list()
     for img in ch_imgs:
         img_urls.append(img['src'])
-
     return img_urls
 
 
-def download_from_urls(path_target, img_sources):
+def download_from_urls(chapter_name, path_target, img_sources):
     x = 1
     total_images = len(img_sources)
     if len(os.listdir(path_target)) == 0:
-        print("Directory is not full, downloading...")
+        print(f"Downloading images for {chapter_name}")
         for uri in img_sources:
             print(f"Downloading image {x} / {total_images}")
             urllib.request.urlretrieve(uri, path_target + f"\\ Image {x}.png")
             x += 1
     elif len(os.listdir(path_target)) < total_images:
-        print("Directory is not full, repairing")
+        print(f"{chapter_name} appears damaged, attempting to repair")
         for index in range(len(img_sources)):
             if os.path.isfile(path_target + f"\\ Image {index + 1}.png"):
-                pass
+                print(f"Image {index + 1} / {total_images} is OK")
             else:
                 print(f"Downloading image {index + 1} / {total_images}")
                 urllib.request.urlretrieve(img_sources[index], path_target + f"\\ Image {index + 1}.png")
 
+        print("Repair success")
+
     else:
-        print("Directory is full, skipping")
+        print(f"{chapter_name} is OK, skipping...")
