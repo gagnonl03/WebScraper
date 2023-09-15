@@ -2,7 +2,7 @@
 Early version of an image webscraper for bato.to
 
 Notes: Manga images will be placed in the current working directory   
-Downloaded in png format
+Downloaded in png format  
 No release yet, so change the url in the source to the main page for your manga target.
 
 Only use this tool on manga you have the rights to. Don't re-upload anything this script downloads.   
