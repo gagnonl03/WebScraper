@@ -70,3 +70,14 @@ def download_from_urls(chapter_name, path_target, img_sources):
 
     else:
         print(f"{chapter_name} is OK, skipping...")
+
+
+def format_filename(name):
+    formatted = (name.replace(":", "-")
+     .replace("\n", "")
+     .replace("?", "")
+     .replace("?", "")
+     .replace("*", " ")
+     .replace("\"", "'")
+     .replace("..", ""))
+    return formatted

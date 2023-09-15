@@ -41,16 +41,10 @@ chapt_dict = dict()
 
 for chapt in ch_raws:
     url_target = "http://bato.to" + chapt['href']
-    chapt_num = (chapt.text[1:len(chapt.text) - 1]
-                 .replace(":", "-")
-                 .replace("\n", "")
-                 .replace("?", "")
-                 .replace("*", " ")
-                 .replace("\"", "'")
-                 .replace("..", ""))
+    chapt_num = helper.format_filename(chapt.text[1:len(chapt.text) - 1])
     chapt_dict[chapt_num] = url_target
 
-folder_name = os.getcwd() + "\\" + manga_name
+folder_name = os.getcwd() + "\\" + helper.format_filename(manga_name)
 if os.path.exists(folder_name):
     print("A folder with this manga's name already exists. Would you like to replace it? \n"
           "This will delete all subfolders and files! (y/n)")
