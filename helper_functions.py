@@ -55,7 +55,7 @@ def download_from_urls(chapter_name, path_target, img_sources):
         print(f"Downloading images for {chapter_name}")
         for uri in img_sources:
             print(f"Downloading image {x} / {total_images}")
-            urllib.request.urlretrieve(uri, path_target + f"\\ Image {x}.png")
+            urllib.request.urlretrieve(uri, path_target + f"\\image_{x}.png")
             x += 1
     elif len(os.listdir(path_target)) < total_images:
         print(f"{chapter_name} appears damaged, attempting to repair")
