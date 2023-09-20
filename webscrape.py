@@ -5,6 +5,13 @@ from selenium import webdriver
 import shutil
 import helper_functions as helper
 
+
+
+
+print("Welcome to webscraper v1.1")
+print("Please select the browser you have installed\n[1]Chrome\n[2]Firefox\n[3]Edge")
+
+
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--blink-settings=imagesEnabled=false')
 chrome_options.add_argument("--disable-extensions")
