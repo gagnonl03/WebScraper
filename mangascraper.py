@@ -1,5 +1,5 @@
 import helper_functions as helper
-import webscrape as bato_scraper
+import bato_scraper as bato_scraper
 from selenium import webdriver
 
 

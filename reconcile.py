@@ -9,7 +9,7 @@ paths = list()
 for dir in os.listdir(current_path):
     print(dir)
     if dir != ".git" and dir != ".idea" and dir != "__pycache__" and dir != "helper_functions.py" and dir != "LICENSE" and dir != "README.md"\
-            and dir != "reconcile.py" and dir != "webscrape.py":
+            and dir != "reconcile.py" and dir != "bato_scraper.py":
         paths.append(dir)
 
 manga_paths = list()
