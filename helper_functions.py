@@ -81,3 +81,26 @@ def format_filename(name):
                  .replace("..", ""))
 
     return formatted
+
+def get_indexed_input(prompt_string, data):
+    for i in range(len(data)):
+        print(f"[{i + 1}] {data[i]}")
+    print(prompt_string)
+    user_input = ""
+    isInvalid = True
+    while isInvalid:
+        user_input = input()
+        if user_input.lower().strip() == "exit":
+            print("Forced program exit!")
+            exit(900)
+        if str.isdigit(user_input):
+            user_input = int(user_input)
+            if user_input <= len(data):
+                isInvalid = False
+            else:
+                print("number is not in range")
+        else:
+            print("number needs to be an integer")
+
+    return user_input - 1
+
