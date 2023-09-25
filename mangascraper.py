@@ -36,4 +36,7 @@ while run:
         bato_scraper.bato_scrape(driver)
     else:
         print("Quitting...")
-        exit(0)
+        run = False
+
+
+exit(0)
