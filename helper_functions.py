@@ -31,6 +31,22 @@ def make_folders(chapt_dict, manga_folder):
             os.mkdir(chap_folder)
 
 
+def make_manga_folder(manga_name):
+    folder_name = os.getcwd() + "\\" + format_filename(manga_name)
+    if os.path.exists(folder_name):
+        print("A folder with this manga's name already exists. Would you like to replace it? \n"
+              "This will delete all subfolders and files! (y/n)")
+        input1 = input()
+        if input1.lower().strip() == "y":
+            shutil.rmtree(folder_name)
+            os.mkdir(folder_name)
+        else:
+            print("using existing directory")
+    else:
+        os.mkdir(folder_name)
+    return folder_name
+
+
 def download_chapter(driver, chap, chapter_url, folder_name):
     img_sources = collect_img_urls(driver, chapter_url)
     chapter_folder = folder_name + "\\" + chap
@@ -84,6 +100,7 @@ def format_filename(name):
 
     return formatted
 
+
 def get_indexed_input(prompt_string, data):
     for i in range(len(data)):
         print(f"[{i + 1}] {data[i]}")
@@ -105,4 +122,3 @@ def get_indexed_input(prompt_string, data):
             print("number needs to be an integer")
 
     return user_input - 1
-

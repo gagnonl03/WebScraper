@@ -36,18 +36,7 @@ def bato_scrape(driver):
         chapt_num = helper.format_filename(chapt.text[1:len(chapt.text) - 1])
         chapt_dict[chapt_num] = url_target
 
-    folder_name = os.getcwd() + "\\" + helper.format_filename(manga_name)
-    if os.path.exists(folder_name):
-        print("A folder with this manga's name already exists. Would you like to replace it? \n"
-              "This will delete all subfolders and files! (y/n)")
-        input1 = input()
-        if input1.lower().strip() == "y":
-            shutil.rmtree(folder_name)
-            os.mkdir(folder_name)
-        else:
-            print("using existing directory")
-    else:
-        os.mkdir(folder_name)
+    folder_name = helper.make_manga_folder(manga_name)
 
     helper.make_folders(chapt_dict, folder_name)
     for chapter in chapt_dict:
