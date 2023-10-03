@@ -4,6 +4,7 @@ import urllib.request
 from bs4 import BeautifulSoup
 
 
+# makes manga folders
 def make_folders(chapt_dict, manga_folder):
     replace_folders_status = 0
     for chapter in chapt_dict:
@@ -31,6 +32,8 @@ def make_folders(chapt_dict, manga_folder):
             os.mkdir(chap_folder)
 
 
+# creates a manga folder named for a
+# user can select to replace an already existing folder if they'd like
 def make_manga_folder(manga_name):
     folder_name = os.getcwd() + "\\" + format_filename(manga_name)
     if os.path.exists(folder_name):
@@ -47,6 +50,7 @@ def make_manga_folder(manga_name):
     return folder_name
 
 
+# function only downloads from bato.to
 def download_chapter(driver, chap, chapter_url, folder_name):
     img_sources = collect_img_urls(driver, chapter_url)
     chapter_folder = folder_name + "\\" + chap
@@ -54,6 +58,7 @@ def download_chapter(driver, chap, chapter_url, folder_name):
     return
 
 
+# this function only collects image URLs for bato.to
 def collect_img_urls(driver, chap_url):
     driver.get(chap_url)
     soup_source = BeautifulSoup(driver.page_source, "html.parser")
@@ -100,6 +105,37 @@ def format_filename(name):
 
     return formatted
 
+
+def make_chapter_folders_mangadex(manga_folder, data):
+    replace_folders_status = 0
+    for chapter in data:
+        chap_name = f"Volume {chapter[3]} Chapter {chapter[1]}"
+        if str(chapter[2]) != "null" and chapter[2] != "":
+            chap_name += f" - {chapter[2]}"
+        chap_name = format_filename(chap_name)
+        chap_folder = manga_folder + "\\" + chap_name
+
+        if os.path.isdir(chap_folder) and replace_folders_status == 0:
+            print(f"A folder for chapter {chapter} already exists")
+            print("Would you like to replace folders that exist, or ignore them? (y/n)")
+            print("Insert (ys/ns) to only skip this specific folder")
+            user_input = input().strip().lower()
+            if user_input == "y":
+                shutil.rmtree(chap_folder)
+                replace_folders_status = 1
+                os.mkdir(chap_folder)
+            elif user_input == "ys":
+                shutil.rmtree(chap_folder)
+                os.mkdir(chap_folder)
+            elif user_input == "n":
+                replace_folders_status = 2
+        elif os.path.isdir(chap_folder) and replace_folders_status == 1:
+            shutil.rmtree(chap_folder)
+            os.mkdir(chap_folder)
+        elif os.path.isdir(chap_folder) and replace_folders_status == 2:
+            pass
+        else:
+            os.mkdir(chap_folder)
 
 def get_indexed_input(prompt_string, data):
     for i in range(len(data)):

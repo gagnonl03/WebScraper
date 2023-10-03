@@ -5,13 +5,23 @@ import helper_functions as helper
 import requests
 
 base_url = "https://api.mangadex.org"
+
+
+def save_json(data):
+    json_data = json.dumps(data, indent=4)
+    with open(f"dump.json", "w") as outfile:
+        outfile.write(json_data)
+
+
 def filter_en_chapters(data_json):
     temp_list = list()
     for item in data_json:
         if item['attributes']['translatedLanguage'] == "en":
-            temp_list.append((item['id'], item['attributes']['chapter'], item['attributes']['title'], item['attributes']['volume']))
+            temp_list.append(
+                (item['id'], item['attributes']['chapter'], item['attributes']['title'], item['attributes']['volume']))
     print(f"returned {len(temp_list)} items")
     return temp_list
+
 
 def download_mangadex(manga_url):
     manga_id = manga_url.split("/")[4]
@@ -19,7 +29,6 @@ def download_mangadex(manga_url):
     manga_name = r['data']['attributes']['title']['en']
     folder_name = helper.make_manga_folder(manga_name)
     response_json = requests.get(f"{base_url}/manga/{manga_id}/feed").json()
-
     print(type(response_json))
     total_items = response_json['total']
     required_requests = math.ceil(total_items / 100) - 1
@@ -38,11 +47,11 @@ def download_mangadex(manga_url):
         en_chaps = en_chaps + filter_en_chapters(r['data'])
         required_requests -= 1
 
-    print(en_chaps)
-    print(len(en_chaps))
     en_chaps.sort(key=lambda x: float(x[1]))
     print(en_chaps)
     print(len(en_chaps))
+    save_json(en_chaps)
+    helper.make_chapter_folders_mangadex(folder_name, en_chaps)
 
 
 download_mangadex("https://mangadex.org/title/a25e46ec-30f7-4db6-89df-cacbc1d9a900")

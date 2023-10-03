@@ -33,7 +33,13 @@ while run:
     program_options = ["Download manga", "Exit"]
     option_selected = helper.get_indexed_input("What would you like to do?", program_options)
     if option_selected == 0:
-        bato_scraper.bato_scrape(driver)
+        source_options = ["Bato", "MangaDex"]
+        source_selected = helper.get_indexed_input("Select manga source", source_options)
+        if source_selected == 0:
+            bato_scraper.bato_scrape(driver)
+        else:
+            print("Mangadex support coming soon!")
+            print("Ty to MangaDex for having an API <3")
     else:
         print("Quitting...")
         run = False
