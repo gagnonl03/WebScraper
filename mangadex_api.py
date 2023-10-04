@@ -1,7 +1,5 @@
 import json
 import math
-import os
-import urllib.request
 
 import helper_functions as helper
 
@@ -11,7 +9,21 @@ base_url = "https://api.mangadex.org"
 
 
 def mangadex_download():
-    return
+    print("Input mangadex link to start downloading (this should be the general page for the manga you want)")
+    user_input = input().strip().lower()
+    url = user_input
+
+    if user_input[0:4] != "http":
+        user_input = "http://" + user_input
+        spliced_input = user_input.split("/")
+        if spliced_input[2] != "mangadex.org" or spliced_input[3] != "title":
+            print("not a valid series link\n")
+            return
+        response = requests.get(user_input)
+        if response.status_code == 200:
+            url = user_input
+    download_mangadex(url)
+
 
 def save_json(file_name, data):
     json_data = json.dumps(data, indent=4)
@@ -26,7 +38,6 @@ def filter_en_chapters(data_json):
             temp_list.append(
                 (item['id'], item['attributes']['chapter'], item['attributes']['title'],
                  item['attributes']['volume']))
-    print(f"returned {len(temp_list)} items")
     return temp_list
 
 
@@ -36,13 +47,11 @@ def download_mangadex(manga_url):
     manga_name = r['data']['attributes']['title']['en']
     folder_name = helper.make_manga_folder(manga_name)
     response_json = requests.get(f"{base_url}/manga/{manga_id}/feed").json()
-    print(type(response_json))
     total_items = response_json['total']
     required_requests = math.ceil(total_items / 100) - 1
-    print(total_items)
-    print(required_requests)
     data_list = response_json['data']
     en_chaps = list()
+    print("Collecting manga IDs...")
     en_chaps = en_chaps + filter_en_chapters(data_list)
     while required_requests > 0:
         r = requests.get(
@@ -55,8 +64,6 @@ def download_mangadex(manga_url):
         required_requests -= 1
 
     en_chaps.sort(key=lambda x: float(x[1]))
-    print(en_chaps)
-    print(len(en_chaps))
     save_json("chaps", en_chaps)
     helper.make_chapter_folders_mangadex(folder_name, en_chaps)
     download_images(folder_name, en_chaps)
@@ -82,5 +89,4 @@ def download_chapter_images(chapter_name, chapter_folder_name, manga_id):
         images_src.append(chap_url + image)
     helper.download_from_urls(chapter_name, chapter_folder_name, images_src)
 
-
-#download_mangadex("https://mangadex.org/title/a25e46ec-30f7-4db6-89df-cacbc1d9a900")
+# download_mangadex("https://mangadex.org/title/a25e46ec-30f7-4db6-89df-cacbc1d9a900")

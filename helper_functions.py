@@ -126,7 +126,7 @@ def make_chapter_folders_mangadex(manga_folder, data):
         chap_folder = build_mangadex_foldername(manga_folder, chapter)
 
         if os.path.isdir(chap_folder) and replace_folders_status == 0:
-            print(f"A folder for chapter {chapter} already exists")
+            print(f"A folder for chapter {get_mangadex_chaptername(chapter)} already exists")
             print("Would you like to replace folders that exist, or ignore them? (y/n)")
             print("Insert (ys/ns) to only skip this specific folder")
             user_input = input().strip().lower()
