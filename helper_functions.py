@@ -106,14 +106,24 @@ def format_filename(name):
     return formatted
 
 
+def build_mangadex_foldername(manga_folder, chapter):
+    chapter_name = get_mangadex_chaptername(chapter)
+    full_chapter_folder = manga_folder + "\\" + chapter_name
+    return full_chapter_folder
+
+
+def get_mangadex_chaptername(chapter):
+    chapter_name = f"Volume {chapter[3]} Chapter {chapter[1]}"
+    if str(chapter[2]) != "null" and chapter[2] != "":
+        chapter_name += f" - {chapter[2]}"
+    return format_filename(chapter_name)
+
+
 def make_chapter_folders_mangadex(manga_folder, data):
     replace_folders_status = 0
+
     for chapter in data:
-        chap_name = f"Volume {chapter[3]} Chapter {chapter[1]}"
-        if str(chapter[2]) != "null" and chapter[2] != "":
-            chap_name += f" - {chapter[2]}"
-        chap_name = format_filename(chap_name)
-        chap_folder = manga_folder + "\\" + chap_name
+        chap_folder = build_mangadex_foldername(manga_folder, chapter)
 
         if os.path.isdir(chap_folder) and replace_folders_status == 0:
             print(f"A folder for chapter {chapter} already exists")
@@ -129,6 +139,7 @@ def make_chapter_folders_mangadex(manga_folder, data):
                 os.mkdir(chap_folder)
             elif user_input == "n":
                 replace_folders_status = 2
+
         elif os.path.isdir(chap_folder) and replace_folders_status == 1:
             shutil.rmtree(chap_folder)
             os.mkdir(chap_folder)
@@ -137,13 +148,14 @@ def make_chapter_folders_mangadex(manga_folder, data):
         else:
             os.mkdir(chap_folder)
 
+
 def get_indexed_input(prompt_string, data):
     for i in range(len(data)):
         print(f"[{i + 1}] {data[i]}")
     print(prompt_string)
     user_input = ""
-    isInvalid = True
-    while isInvalid:
+    is_invalid = True
+    while is_invalid:
         user_input = input()
         if user_input.lower().strip() == "exit":
             print("Forced program exit!")
@@ -151,7 +163,7 @@ def get_indexed_input(prompt_string, data):
         if str.isdigit(user_input):
             user_input = int(user_input)
             if user_input <= len(data):
-                isInvalid = False
+                is_invalid = False
             else:
                 print("number is not in range")
         else:
