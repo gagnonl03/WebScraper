@@ -99,6 +99,7 @@ def format_filename(name):
                  .replace("?", "")
                  .replace("*", " ")
                  .replace("\"", "'")
+                 .replace("/", "_")
                  .replace("..", "")
                  .replace("<", "(lt)")
                  .replace(">", "(gt)"))
