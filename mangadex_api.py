@@ -82,7 +82,6 @@ def temp_filter_en_chaps(chaps):
 
 def download_images(folder_name, data):
     for chapter in data:
-        print(f"Downloading images for chapter {chapter[1]}")
         download_chapter_images(helper.get_mangadex_chaptername(chapter),
                                 helper.build_mangadex_foldername(folder_name, chapter),
                                 chapter[0])
