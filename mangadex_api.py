@@ -64,22 +64,22 @@ def download_mangadex(manga_url):
         required_requests -= 1
 
     en_chaps.sort(key=lambda x: float(x[1]))
-    save_json("chaps", en_chaps)
     filtered_en_chaps = temp_filter_en_chaps(en_chaps)
-    save_json("filteredchaps", filtered_en_chaps)
-    helper.make_chapter_folders_mangadex(folder_name, en_chaps)
-    download_images(folder_name, en_chaps)
+    helper.make_chapter_folders_mangadex(folder_name, filtered_en_chaps)
+    download_images(folder_name, filtered_en_chaps)
+
 
 def temp_filter_en_chaps(chaps):
     filtered_en_chaps = list()
-    current_chap = int(chaps[0][1]) - 1
+    filtered_en_chaps.append(chaps[0])
     for item in chaps:
-        if int(item[1]) != current_chap:
+        if item[1] != filtered_en_chaps[-1][1]:
             filtered_en_chaps.append(item)
-            current_chap += 1
         else:
             pass
     return filtered_en_chaps
+
+
 def download_images(folder_name, data):
     for chapter in data:
         print(f"Downloading images for chapter {chapter[1]}")
