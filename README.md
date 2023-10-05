@@ -9,4 +9,4 @@ Downloaded in png format.
 
 Only use this tool on manga you have the rights to. Don't re-upload anything this script downloads.   
 This was built as a learning exercise, and I am not responsible for any legal problems you get into.  
-# Use at your own risk.
+## Use at your own risk.
