@@ -1,11 +1,56 @@
 import json
 import math
+import os
+import shutil
 
 import helper_functions as helper
 
 import requests
 
 base_url = "https://api.mangadex.org"
+
+
+def get_mangadex_chapter_name(chapter):
+    chapter_name = f"Volume {chapter[3]} Chapter {chapter[1]}"
+    if str(chapter[2]) != "null" and chapter[2] != "":
+        chapter_name += f" - {chapter[2]}"
+    return helper.format_filename(chapter_name)
+
+
+def build_mangadex_folder_name(manga_folder, chapter):
+    chapter_name = get_mangadex_chapter_name(chapter)
+    full_chapter_folder = manga_folder + "\\" + chapter_name
+    return full_chapter_folder
+
+
+def make_chapter_folders_mangadex(manga_folder, data):
+    replace_folders_status = 0
+
+    for chapter in data:
+        chap_folder = build_mangadex_folder_name(manga_folder, chapter)
+
+        if os.path.isdir(chap_folder) and replace_folders_status == 0:
+            print(f"A folder for chapter {get_mangadex_chapter_name(chapter)} already exists")
+            print("Would you like to replace folders that exist, or ignore them? (y/n)")
+            print("Insert (ys/ns) to only skip this specific folder")
+            user_input = input().strip().lower()
+            if user_input == "y":
+                shutil.rmtree(chap_folder)
+                replace_folders_status = 1
+                os.mkdir(chap_folder)
+            elif user_input == "ys":
+                shutil.rmtree(chap_folder)
+                os.mkdir(chap_folder)
+            elif user_input == "n":
+                replace_folders_status = 2
+
+        elif os.path.isdir(chap_folder) and replace_folders_status == 1:
+            shutil.rmtree(chap_folder)
+            os.mkdir(chap_folder)
+        elif os.path.isdir(chap_folder) and replace_folders_status == 2:
+            pass
+        else:
+            os.mkdir(chap_folder)
 
 
 def mangadex_download():
@@ -65,7 +110,7 @@ def download_mangadex(manga_url):
 
     en_chaps.sort(key=lambda x: float(x[1]))
     filtered_en_chaps = temp_filter_en_chaps(en_chaps)
-    helper.make_chapter_folders_mangadex(folder_name, filtered_en_chaps)
+    make_chapter_folders_mangadex(folder_name, filtered_en_chaps)
     download_images(folder_name, filtered_en_chaps)
 
 
@@ -82,8 +127,8 @@ def temp_filter_en_chaps(chaps):
 
 def download_images(folder_name, data):
     for chapter in data:
-        download_chapter_images(helper.get_mangadex_chaptername(chapter),
-                                helper.build_mangadex_foldername(folder_name, chapter),
+        download_chapter_images(get_mangadex_chapter_name(chapter),
+                                build_mangadex_folder_name(folder_name, chapter),
                                 chapter[0])
 
 

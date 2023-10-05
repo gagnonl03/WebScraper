@@ -3,6 +3,23 @@ from bs4 import BeautifulSoup
 import helper_functions as helper
 
 
+def download_chapter(driver, chap, chapter_url, folder_name):
+    img_sources = collect_img_urls(driver, chapter_url)
+    chapter_folder = folder_name + "\\" + chap
+    helper.download_from_urls(chap, chapter_folder, img_sources)
+    return
+
+
+def collect_img_urls(driver, chap_url):
+    driver.get(chap_url)
+    soup_source = BeautifulSoup(driver.page_source, "html.parser")
+    ch_imgs = soup_source.find_all("img", class_="page-img")
+    img_urls = list()
+    for img in ch_imgs:
+        img_urls.append(img['src'])
+    return img_urls
+
+
 def bato_scrape(driver):
     print("Input the link for a manga on bato.to (this should be the main page for the manga) "
           "to start scraping")
@@ -38,7 +55,7 @@ def bato_scrape(driver):
 
     helper.make_folders(chapt_dict, folder_name)
     for chapter in chapt_dict:
-        helper.download_chapter(driver, chapter, chapt_dict[chapter], folder_name)
+        download_chapter(driver, chapter, chapt_dict[chapter], folder_name)
 
     driver.close()
     print("Download Success!")
