@@ -73,6 +73,8 @@ def download_from_urls(chapter_name, path_target, img_sources):
         print(f"{chapter_name} is OK, skipping...")
 
 
+# formats a given string into a version that
+# is valid to be saved as a file
 def format_filename(name):
     formatted = (name.strip().replace(":", "-")
                  .replace("\n", "")
@@ -86,6 +88,13 @@ def format_filename(name):
 
     return formatted
 
+
+# given an array creates a selection system for the user to pick an option
+# formatted as the following:
+# [1] Option 1
+# [2] Option 2
+# etc...
+# note: contains option inputting "exit" in order to force program exit
 def get_indexed_input(prompt_string, data):
     for i in range(len(data)):
         print(f"[{i + 1}] {data[i]}")
