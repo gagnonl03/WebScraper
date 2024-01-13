@@ -11,6 +11,7 @@ import requests
 base_url = "https://api.mangadex.org"
 
 
+# builds a
 def get_mangadex_chapter_name(chapter):
     chapter_name = f"Volume {chapter[3]} Chapter {chapter[1]}"
     if str(chapter[2]) != "null" and chapter[2] != "":
