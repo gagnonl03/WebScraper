@@ -2,6 +2,7 @@ import json
 import math
 import os
 import shutil
+import time
 
 import helper_functions as helper
 
@@ -130,6 +131,7 @@ def download_images(folder_name, data):
         download_chapter_images(get_mangadex_chapter_name(chapter),
                                 build_mangadex_folder_name(folder_name, chapter),
                                 chapter[0])
+        time.sleep(0.2)
 
 
 def download_chapter_images(chapter_name, chapter_folder_name, manga_id):

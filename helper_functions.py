@@ -87,9 +87,9 @@ def format_filename(name):
     return formatted
 
 def get_indexed_input(prompt_string, data):
+    print(prompt_string)
     for i in range(len(data)):
         print(f"[{i + 1}] {data[i]}")
-    print(prompt_string)
     user_input = ""
     is_invalid = True
     while is_invalid:
