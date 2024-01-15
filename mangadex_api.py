@@ -109,6 +109,7 @@ def download_mangadex(manga_url):
         ).json()
         en_chaps = en_chaps + filter_en_chapters(r['data'])
         required_requests -= 1
+        time.sleep(0.2)
 
     en_chaps.sort(key=lambda x: float(x[1]))
     filtered_en_chaps = temp_filter_en_chaps(en_chaps)
