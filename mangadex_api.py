@@ -139,6 +139,7 @@ def download_images(folder_name, data):
 def download_chapter_images(chapter_name, chapter_folder_name, manga_id):
     response_json = requests.get("https://api.mangadex.org/at-home/server/" + manga_id).json()
     base_url = response_json["baseUrl"]
+    time.sleep(0.2)
     chapter_hash = response_json["chapter"]["hash"]
     chap_url = base_url + "/data/" + chapter_hash + "/"
     x = 1
