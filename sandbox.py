@@ -8,15 +8,22 @@ import helper_functions
 
 
 
-browser = webdriver.Chrome()
 
 #wire_browser = webdriver.Firefox()
 
+headers = {
+    'referer': 'https://chapmanganato.to/',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+}
 
 
-browser.get("http://bato.to/chapter/1579383")
+r = requests.get("https://chapmanganato.to/manga-rz951534/chapter-1")
+soup = BeautifulSoup(r.content, "html.parser")
+#out = soup.find_all("a", class_="chapter-name text-nowrap")
+#print(out[::-1][0]["href"])
 
-soup_source = BeautifulSoup(browser.page_source, "html.parser")
-ch_imgs = soup_source.find_all("img", class_="page-img")
-uri = ch_imgs[10]['src']
+out = soup.find_all("img")
+print(out[1:len(out) - 1])
+
+
 
